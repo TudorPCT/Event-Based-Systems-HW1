@@ -3,7 +3,10 @@ package org.example.ebs;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class SubscriptionGenerator {
     private static final String[] COMPANIES = {"Google", "Microsoft", "Apple", "Amazon"};
@@ -11,7 +14,7 @@ public class SubscriptionGenerator {
     private static final double PRECISION = 100.0;
 
     public List<Subscription> generateSubscriptions(
-            int count, Map<String, Integer> fieldFreq, Map<Integer, Integer> eqFreq){
+            int count, Map<String, Integer> fieldFreq, Map<String, Integer> eqFreq){
 
         List<Subscription> subscriptions = new ArrayList<>();
 
@@ -27,7 +30,7 @@ public class SubscriptionGenerator {
             int fieldCount = count * freq / 100;
 
             for (int i = 0; i < fieldCount; i++) {
-                Object fieldValue = null;
+                Object fieldValue;
 
                 if (fieldName.equals("company")){
                     fieldValue = COMPANIES[ThreadLocalRandom.current().nextInt(0, COMPANIES.length)];
@@ -49,6 +52,41 @@ public class SubscriptionGenerator {
                 subscriptionLine++;
             }
         }
+
+        return subscriptions;
+    }
+
+    public List<Subscription> generateSubscriptionsMultiThread(
+            int count, Map<String, Integer> fieldFreq, Map<String, Integer> eqFreq) throws InterruptedException {
+
+        //use try with resources to close the executor
+
+        List<Subscription> subscriptions = new ArrayList<>();
+
+//        ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(fieldFreq.size());
+
+        int subscriptionLine = 0;
+
+        for (int i = 0; i < count; i++) {
+            subscriptions.add(new Subscription());
+        }
+
+        try (ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(fieldFreq.size())) {
+            for (var fieldFreqEntry : fieldFreq.entrySet()) {
+                String fieldName = fieldFreqEntry.getKey();
+                int freq = fieldFreqEntry.getValue();
+                int fieldCount = count * freq / 100;
+
+                executor.execute(new SubscriptionsWorker(
+                        count, subscriptions, fieldName, subscriptionLine, fieldCount, null
+                ));
+
+                subscriptionLine += fieldCount;
+            }
+        }
+
+//        executor.shutdown();
+//        executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 
         return subscriptions;
     }
