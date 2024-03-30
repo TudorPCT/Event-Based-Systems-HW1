@@ -21,7 +21,7 @@ public class Main {
 
         SubscriptionGenerator subscriptionGenerator = new SubscriptionGenerator();
         long startTime = System.currentTimeMillis();
-        var subscriptions = subscriptionGenerator.generateSubscriptions(10, fieldFreq, eqFreq);
+        var subscriptions = subscriptionGenerator.generateSubscriptions(100000, fieldFreq, eqFreq);
         long endTime = System.currentTimeMillis();
 
         long startTimeMultiThread = System.currentTimeMillis();

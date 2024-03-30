@@ -1,17 +1,20 @@
 package org.ebs.subscription;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Subscription {
-    private List<SubscriptionField> fields;
+    private final List<SubscriptionField> fields;
 
     public Subscription() {
-        this.fields = new ArrayList<>();
+        this.fields = Collections.synchronizedList(new ArrayList<>());
     }
 
     public void addField(SubscriptionField field) {
-        fields.add(field);
+        synchronized (fields) {
+            fields.add(field);
+        }
     }
 
     public List<SubscriptionField> getFields() {

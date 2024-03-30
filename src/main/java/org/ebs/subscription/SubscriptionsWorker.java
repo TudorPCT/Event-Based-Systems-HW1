@@ -1,15 +1,11 @@
 package org.ebs.subscription;
-import org.apache.commons.math3.distribution.EnumeratedDistribution;
-import org.apache.commons.math3.util.Pair;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class SubscriptionsWorker implements Runnable {
     private static final String[] COMPANIES = {"Google", "Microsoft", "Apple", "Amazon"};
-    private static final String[] OPERATORS = {"=", ">", "<"};
     private static final double PRECISION = 100.0;
 
     private final Integer subscriptionCount;
@@ -18,33 +14,17 @@ public class SubscriptionsWorker implements Runnable {
     private final String fieldName;
     private final Integer fieldCount;
 
-    private final EnumeratedDistribution<String> distribution;
+    private final SynchronizedEnumeratedDistribution distribution;
 
     public SubscriptionsWorker(Integer subscriptionCount, List<Subscription> subscriptionList,
                                String fieldName, Integer subscriptionLine, Integer fieldCount,
-                               Double eqFreq) {
+                               SynchronizedEnumeratedDistribution distribution) {
         this.subscriptionCount = subscriptionCount;
         this.subscriptionList = subscriptionList;
         this.fieldName = fieldName;
         this.subscriptionLine = subscriptionLine;
         this.fieldCount = fieldCount;
-
-        if (eqFreq == null) {
-            eqFreq = 1.0 / OPERATORS.length;
-        }
-
-        List<Pair<String, Double>> operatorProbabilities = new ArrayList<>();
-        double otherOperatorsProb = (1.0 - eqFreq) / (OPERATORS.length - 1);
-
-        operatorProbabilities.add(new Pair<>("=", eqFreq));
-
-        for (String operator : OPERATORS) {
-            if (!operator.equals("=")) {
-                operatorProbabilities.add(new Pair<>(operator, otherOperatorsProb));
-            }
-        }
-
-        this.distribution = new EnumeratedDistribution<>(operatorProbabilities);
+        this.distribution = distribution;
     }
 
     @Override
