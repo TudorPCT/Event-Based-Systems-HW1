@@ -25,12 +25,12 @@ public class Main {
         long endTime = System.currentTimeMillis();
 
         long startTimeMultiThread = System.currentTimeMillis();
-        var subscriptionsMultiThread = subscriptionGenerator.generateSubscriptionsMultiThread(10, fieldFreq, eqFreq);
+        var subscriptionsMultiThread = subscriptionGenerator.generateSubscriptionsMultiThread(100000, fieldFreq, eqFreq);
         long endTimeMultiThread = System.currentTimeMillis();
 
-        for (var subscription: subscriptionsMultiThread){
-            System.out.println(subscription);
-        }
+//        for (var subscription: subscriptionsMultiThread){
+//            System.out.println(subscription);
+//        }
         System.out.println("Time: " + (endTime - startTime) + " ms");
         System.out.println("Time MultiThread: " + (endTimeMultiThread - startTimeMultiThread) + " ms");
     }

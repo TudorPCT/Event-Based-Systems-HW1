@@ -50,7 +50,9 @@ public class SubscriptionGenerator {
             subscriptions.add(new Subscription());
         }
 
-        try (ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(fieldFreq.size())) {
+        try (ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors
+                .newFixedThreadPool(Math.max(count / 100, fieldFreq.size()))
+        ) {
             for (var fieldFreqEntry : fieldFreq.entrySet()) {
                 String fieldName = fieldFreqEntry.getKey();
                 Double freq = fieldFreqEntry.getValue();
@@ -60,8 +62,9 @@ public class SubscriptionGenerator {
                 }
 
                 SynchronizedEnumeratedDistribution distribution = buildDistribution(eqFreq.getOrDefault(fieldName, null));
+
                 int fieldCount = (int) (count * freq);
-                int step = (int) Math.min(Math.max(fieldCount * 0.1, 10), fieldCount);
+                int step = Math.min(Math.max(fieldCount / 10, 10), fieldCount);
 
                 for(int i = 0; i < fieldCount; i += step ) {
                     executor.execute(new SubscriptionsWorker(
