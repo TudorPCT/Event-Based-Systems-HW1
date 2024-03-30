@@ -6,24 +6,29 @@ import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {
-        Map<String, Integer> fieldFreq = Map.of(
-                "company", 90,
-                "value", 50,
-                "drop", 20,
-                "variation", 40,
-                "date", 30
+        Map<String, Double> fieldFreq = Map.of(
+                "company", 0.9,
+                "value", 0.50,
+                "drop", 0.20,
+                "variation", 0.40,
+                "date", 0.30
+        );
+
+        Map<String, Double> eqFreq = Map.of(
+                "company", 0.5,
+                "value", 0.4
         );
 
         SubscriptionGenerator subscriptionGenerator = new SubscriptionGenerator();
         long startTime = System.currentTimeMillis();
-        var subscriptions = subscriptionGenerator.generateSubscriptions(100000, fieldFreq, null);
+        var subscriptions = subscriptionGenerator.generateSubscriptions(100000, fieldFreq, eqFreq);
         long endTime = System.currentTimeMillis();
 
         long startTimeMultiThread = System.currentTimeMillis();
-        var subscriptionsMultiThread = subscriptionGenerator.generateSubscriptionsMultiThread(100000, fieldFreq, null);
+        var subscriptionsMultiThread = subscriptionGenerator.generateSubscriptionsMultiThread(100000, fieldFreq, eqFreq);
         long endTimeMultiThread = System.currentTimeMillis();
 
-        for (var subscription: subscriptions){
+        for (var subscription: subscriptionsMultiThread){
             System.out.println(subscription);
         }
         System.out.println("Time: " + (endTime - startTime) + " ms");

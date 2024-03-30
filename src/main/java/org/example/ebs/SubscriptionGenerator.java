@@ -9,7 +9,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class SubscriptionGenerator {
 
     public List<Subscription> generateSubscriptions(
-            int count, Map<String, Integer> fieldFreq, Map<String, Integer> eqFreq){
+            int count, Map<String, Double> fieldFreq, Map<String, Double> eqFreq){
 
         List<Subscription> subscriptions = new ArrayList<>();
 
@@ -21,11 +21,12 @@ public class SubscriptionGenerator {
 
         for (var fieldFreqEntry: fieldFreq.entrySet()) {
             String fieldName = fieldFreqEntry.getKey();
-            int freq = fieldFreqEntry.getValue();
-            int fieldCount = count * freq / 100;
+            Double freq = fieldFreqEntry.getValue();
+            int fieldCount = (int) (count * freq);
 
             new SubscriptionsWorker(
-                    count, subscriptions, fieldName, subscriptionLine, fieldCount, null
+                    count, subscriptions, fieldName, subscriptionLine,
+                    fieldCount, eqFreq.getOrDefault(fieldName, null)
             ).run();
 
             subscriptionLine += fieldCount;
@@ -35,7 +36,7 @@ public class SubscriptionGenerator {
     }
 
     public List<Subscription> generateSubscriptionsMultiThread(
-            int count, Map<String, Integer> fieldFreq, Map<String, Integer> eqFreq) {
+            int count, Map<String, Double> fieldFreq, Map<String, Double> eqFreq) {
 
         //use try with resources to close the executor
 
@@ -50,11 +51,12 @@ public class SubscriptionGenerator {
         try (ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(fieldFreq.size())) {
             for (var fieldFreqEntry : fieldFreq.entrySet()) {
                 String fieldName = fieldFreqEntry.getKey();
-                int freq = fieldFreqEntry.getValue();
-                int fieldCount = count * freq / 100;
+                Double freq = fieldFreqEntry.getValue();
+                int fieldCount = (int) (count * freq);
 
                 executor.execute(new SubscriptionsWorker(
-                        count, subscriptions, fieldName, subscriptionLine, fieldCount, null
+                        count, subscriptions, fieldName, subscriptionLine,
+                        fieldCount, eqFreq.getOrDefault(fieldName, null)
                 ));
 
                 subscriptionLine += fieldCount;
