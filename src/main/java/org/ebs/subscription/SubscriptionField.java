@@ -1,4 +1,4 @@
-package org.example.ebs;
+package org.ebs.subscription;
 
 public class SubscriptionField {
     private String fieldName;

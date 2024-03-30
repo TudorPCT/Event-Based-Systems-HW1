@@ -1,4 +1,4 @@
-package org.example.ebs;
+package org.ebs.subscription;
 import org.apache.commons.math3.distribution.EnumeratedDistribution;
 import org.apache.commons.math3.util.Pair;
 

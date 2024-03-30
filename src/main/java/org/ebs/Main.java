@@ -1,6 +1,6 @@
-package org.example;
+package org.ebs;
 
-import org.example.ebs.SubscriptionGenerator;
+import org.ebs.subscription.SubscriptionGenerator;
 
 import java.util.Map;
 

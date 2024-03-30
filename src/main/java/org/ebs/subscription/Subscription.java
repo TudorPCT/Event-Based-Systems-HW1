@@ -1,4 +1,4 @@
-package org.example.ebs;
+package org.ebs.subscription;
 
 import java.util.ArrayList;
 import java.util.List;
