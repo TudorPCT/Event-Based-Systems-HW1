@@ -3,6 +3,7 @@ import org.apache.commons.math3.distribution.EnumeratedDistribution;
 import org.apache.commons.math3.util.Pair;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -71,11 +72,11 @@ public class SubscriptionsWorker implements Runnable {
         }
     }
 
-    private static String getRandomDate() {
-        int year = ThreadLocalRandom.current().nextInt(2000, 2023);
-        int month = ThreadLocalRandom.current().nextInt(1, 13);
-        int day = ThreadLocalRandom.current().nextInt(1, 29);
-        return String.format("%02d.%02d.%d", day, month, year);
+    private static Date getRandomDate() {
+        int year = ThreadLocalRandom.current().nextInt(2000, 2023) - 1900;
+        int month = ThreadLocalRandom.current().nextInt(0, 12);
+        int day = ThreadLocalRandom.current().nextInt(1, 32);
+        return new Date(year, month, day);
     }
 
     private String getRandomOperator() {

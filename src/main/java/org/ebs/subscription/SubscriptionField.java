@@ -1,9 +1,14 @@
 package org.ebs.subscription;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class SubscriptionField {
     private String fieldName;
     private String operator;
     private Object value;
+
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
     public SubscriptionField(String fieldName, String operator, Object value) {
         this.fieldName = fieldName;
@@ -26,6 +31,8 @@ public class SubscriptionField {
     public String toString() {
         if (value instanceof String)
             return "(" + fieldName + ", " + operator + ", \"" + value + "\")";
+        else if(value instanceof Date)
+            return "(" + fieldName + ", " + operator + ", " + dateFormat.format(value) + ")";
         return "(" + fieldName + ", " + operator + ", " + value + ")";
     }
 }

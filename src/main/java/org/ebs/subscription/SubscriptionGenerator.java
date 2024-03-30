@@ -53,13 +53,16 @@ public class SubscriptionGenerator {
                 String fieldName = fieldFreqEntry.getKey();
                 Double freq = fieldFreqEntry.getValue();
                 int fieldCount = (int) (count * freq);
+//                int step = (int) Math.min(Math.max(Math.round(fieldCount * 0.1), 10), fieldCount);
 
-                executor.execute(new SubscriptionsWorker(
-                        count, subscriptions, fieldName, subscriptionLine,
-                        fieldCount, eqFreq.getOrDefault(fieldName, null)
-                ));
+//                for(int i = step; i < fieldCount; i += step ) {
+                    executor.execute(new SubscriptionsWorker(
+                            count, subscriptions, fieldName, subscriptionLine,
+                            fieldCount, eqFreq.getOrDefault(fieldName, null)
+                    ));
 
-                subscriptionLine += fieldCount;
+                    subscriptionLine += fieldCount;
+//                }
             }
         }
 

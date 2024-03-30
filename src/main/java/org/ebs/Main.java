@@ -21,11 +21,11 @@ public class Main {
 
         SubscriptionGenerator subscriptionGenerator = new SubscriptionGenerator();
         long startTime = System.currentTimeMillis();
-        var subscriptions = subscriptionGenerator.generateSubscriptions(100000, fieldFreq, eqFreq);
+        var subscriptions = subscriptionGenerator.generateSubscriptions(10, fieldFreq, eqFreq);
         long endTime = System.currentTimeMillis();
 
         long startTimeMultiThread = System.currentTimeMillis();
-        var subscriptionsMultiThread = subscriptionGenerator.generateSubscriptionsMultiThread(100000, fieldFreq, eqFreq);
+        var subscriptionsMultiThread = subscriptionGenerator.generateSubscriptionsMultiThread(10, fieldFreq, eqFreq);
         long endTimeMultiThread = System.currentTimeMillis();
 
         for (var subscription: subscriptionsMultiThread){
