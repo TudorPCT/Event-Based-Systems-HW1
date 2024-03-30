@@ -5,7 +5,7 @@ import org.example.ebs.SubscriptionGenerator;
 import java.util.Map;
 
 public class Main {
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         Map<String, Integer> fieldFreq = Map.of(
                 "company", 90,
                 "value", 50,
