@@ -13,7 +13,7 @@ public class SubscriptionGenerator {
     private static final String[] OPERATORS = {"=", ">", "<"};
 
     public List<Subscription> generateSubscriptions(
-            int count, Map<String, Double> fieldFreq, Map<String, Double> eqFreq){
+            int count, Map<String, Double> fieldFreq, Map<String, Double> eqFreq) {
 
         List<Subscription> subscriptions = new ArrayList<>();
 
@@ -23,7 +23,7 @@ public class SubscriptionGenerator {
             subscriptions.add(new Subscription());
         }
 
-        for (var fieldFreqEntry: fieldFreq.entrySet()) {
+        for (var fieldFreqEntry : fieldFreq.entrySet()) {
             String fieldName = fieldFreqEntry.getKey();
             Double freq = fieldFreqEntry.getValue();
             int fieldCount = (int) (count * freq);
@@ -42,6 +42,14 @@ public class SubscriptionGenerator {
     public List<Subscription> generateSubscriptionsMultiThread(
             int count, Map<String, Double> fieldFreq, Map<String, Double> eqFreq) {
 
+        ThreadGroup rootGroup = Thread.currentThread().getThreadGroup();
+        while (rootGroup.getParent() != null) {
+            rootGroup = rootGroup.getParent();
+        }
+
+        // Find active threads
+        int numOfAvailableThreads = rootGroup.activeCount();
+
         List<Subscription> subscriptions = new ArrayList<>();
 
         int subscriptionLine = 0;
@@ -51,8 +59,7 @@ public class SubscriptionGenerator {
         }
 
         try (ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors
-                .newFixedThreadPool(Math.max(count / 100, fieldFreq.size()))
-        ) {
+                .newFixedThreadPool(Math.min(Math.max(count / 100, fieldFreq.size()), numOfAvailableThreads))) {
             for (var fieldFreqEntry : fieldFreq.entrySet()) {
                 String fieldName = fieldFreqEntry.getKey();
                 Double freq = fieldFreqEntry.getValue();
@@ -66,7 +73,7 @@ public class SubscriptionGenerator {
                 int fieldCount = (int) (count * freq);
                 int step = Math.min(Math.max(fieldCount / 10, 10), fieldCount);
 
-                for(int i = 0; i < fieldCount; i += step ) {
+                for (int i = 0; i < fieldCount; i += step) {
                     executor.execute(new SubscriptionsWorker(
                             count, subscriptions, fieldName, subscriptionLine, step,
                             distribution
