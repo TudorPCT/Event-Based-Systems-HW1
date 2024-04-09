@@ -44,8 +44,16 @@ public class PublicationGenerator {
             publications.add(new Publication());
         }
 
+        ThreadGroup rootGroup = Thread.currentThread().getThreadGroup();
+        while (rootGroup.getParent() != null) {
+            rootGroup = rootGroup.getParent();
+        }
+
+        // Find active threads
+        int numOfAvailableThreads = rootGroup.activeCount();
+
         try (ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors
-                .newFixedThreadPool(Math.max(count / 100, fieldFreq.size()))
+                .newFixedThreadPool(Math.min(Math.max(count / 100, fieldFreq.size()), numOfAvailableThreads))
         ) {
             for (var fieldFreqEntry : fieldFreq.entrySet()) {
                 String fieldName = fieldFreqEntry.getKey();
